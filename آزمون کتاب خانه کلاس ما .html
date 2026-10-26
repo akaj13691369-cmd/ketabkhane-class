@@ -1,0 +1,1780 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+viewport-fit=cover">
+
+<title>بازی جمله‌سازی</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    min-height:100%;
+}
+
+body{
+
+    font-family:
+    Tahoma,
+    Arial,
+    sans-serif;
+
+    background-image:
+    linear-gradient(
+        rgba(255,255,255,.08),
+        rgba(255,255,255,.08)
+    ),
+    url("https://cdn.imgurl.ir/uploads/k723931_IMG_7844.jpeg");
+
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+
+    min-height:100vh;
+    min-height:100dvh;
+
+    color:#333;
+}
+
+
+/* لایه اصلی */
+
+.overlay{
+
+    width:100%;
+
+    min-height:100vh;
+    min-height:100dvh;
+
+    padding:
+    max(12px,env(safe-area-inset-top))
+    12px
+    max(18px,env(safe-area-inset-bottom))
+    12px;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+}
+
+
+/* کادر شیشه‌ای بازی */
+
+.game{
+
+    position:relative;
+
+    width:min(100%,620px);
+
+    min-height:550px;
+
+    max-height:
+    calc(100dvh - 24px);
+
+    padding:
+    20px
+    18px
+    30px;
+
+    /*
+    کادر نیمه شفاف
+    */
+
+    background:
+    rgba(255,255,255,.58);
+
+    /*
+    افکت شیشه‌ای
+    */
+
+    backdrop-filter:
+    blur(4px);
+
+    -webkit-backdrop-filter:
+    blur(4px);
+
+    border-radius:30px;
+
+    box-shadow:
+    0 15px 45px
+    rgba(50,40,90,.22);
+
+    overflow:auto;
+
+}
+
+
+/* صفحات */
+
+.screen{
+
+    display:none;
+
+    width:100%;
+
+    min-height:480px;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+}
+
+.screen.active{
+    display:flex;
+}
+
+
+/* دکمه موزیک */
+
+.music-btn{
+
+    position:absolute;
+
+    top:15px;
+    left:15px;
+
+    width:46px;
+    height:46px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:
+    rgba(255,255,255,.94);
+
+    box-shadow:
+    0 4px 14px
+    rgba(0,0,0,.15);
+
+    font-size:21px;
+
+    cursor:pointer;
+
+    z-index:10;
+}
+
+
+/* صفحه ورود */
+
+.logo{
+
+    font-size:65px;
+
+    margin-bottom:5px;
+
+    animation:
+    float 2.5s
+    infinite
+    ease-in-out;
+
+}
+
+@keyframes float{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-9px);
+    }
+
+}
+
+
+.title{
+
+    font-size:
+    clamp(25px,7vw,34px);
+
+    font-weight:900;
+
+    color:#654cc4;
+
+    margin:
+    5px 0
+    12px;
+
+}
+
+
+.subtitle{
+
+    font-size:
+    clamp(15px,4.5vw,18px);
+
+    line-height:2;
+
+    color:#444;
+
+    margin-bottom:24px;
+
+}
+
+
+.btn{
+
+    min-height:50px;
+
+    border:none;
+
+    border-radius:17px;
+
+    padding:
+    12px 27px;
+
+    margin-top:17px;
+
+    font-family:inherit;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:
+    0 6px 14px
+    rgba(70,50,120,.16);
+
+}
+
+
+.start-btn{
+
+    background:
+    linear-gradient(
+        135deg,
+        #7258d1,
+        #a38ce9
+    );
+
+    color:white;
+
+}
+
+
+/* قسمت بالای بازی */
+
+.topbar{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-top:40px;
+
+    margin-bottom:14px;
+
+}
+
+
+.badge{
+
+    padding:
+    8px 16px;
+
+    border-radius:13px;
+
+    background:
+    rgba(241,235,255,.90);
+
+    color:#6149bd;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+}
+
+
+.score{
+
+    background:
+    rgba(255,242,199,.93);
+
+    color:#956700;
+
+}
+
+
+/* نوار پیشرفت */
+
+.progress{
+
+    width:100%;
+
+    height:9px;
+
+    background:
+    rgba(231,228,237,.8);
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    margin-bottom:20px;
+
+}
+
+
+.progress-bar{
+
+    height:100%;
+
+    width:25%;
+
+    background:
+    linear-gradient(
+        90deg,
+        #735bd0,
+        #ad99ee
+    );
+
+    border-radius:20px;
+
+    transition:.4s;
+
+}
+
+
+.stage{
+
+    color:#735bd0;
+
+    font-weight:bold;
+
+    font-size:15px;
+
+}
+
+
+.instruction{
+
+    font-size:
+    clamp(17px,5vw,21px);
+
+    font-weight:bold;
+
+    margin:
+    8px 0
+    19px;
+
+}
+
+
+/* کلمات */
+
+.words{
+
+    width:100%;
+
+    min-height:140px;
+
+    padding:14px;
+
+    border:
+    2px dashed
+    rgba(207,194,242,.9);
+
+    border-radius:22px;
+
+    background:
+    rgba(255,255,255,.48);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-content:center;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+}
+
+
+.word{
+
+    border:none;
+
+    border-radius:13px;
+
+    padding:
+    10px 12px;
+
+    min-height:43px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,255,255,.97),
+        rgba(238,233,255,.95)
+    );
+
+    color:#51409b;
+
+    font-family:inherit;
+
+    font-size:
+    clamp(13px,3.8vw,16px);
+
+    font-weight:bold;
+
+    box-shadow:
+    0 3px 8px
+    rgba(70,50,130,.12);
+
+    cursor:pointer;
+
+}
+
+
+.word:active{
+
+    transform:scale(.94);
+
+}
+
+
+.word.used{
+
+    opacity:.28;
+
+    pointer-events:none;
+
+}
+
+
+/* محل پاسخ */
+
+.answer{
+
+    width:100%;
+
+    min-height:105px;
+
+    margin-top:14px;
+
+    padding:13px;
+
+    border-radius:22px;
+
+    background:
+    rgba(239,255,246,.70);
+
+    border:
+    2px solid
+    rgba(204,235,216,.9);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-content:center;
+
+    flex-wrap:wrap;
+
+    gap:7px;
+
+}
+
+
+.answer .word{
+
+    background:
+    linear-gradient(
+        135deg,
+        #74c995,
+        #4ead79
+    );
+
+    color:white;
+
+}
+
+
+.placeholder{
+
+    color:#777;
+
+    font-size:14px;
+
+    align-self:center;
+
+}
+
+
+.feedback{
+
+    min-height:40px;
+
+    margin-top:8px;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    line-height:1.8;
+
+}
+
+
+.check-btn{
+
+    background:
+    linear-gradient(
+        135deg,
+        #4caf78,
+        #78d59e
+    );
+
+    color:white;
+
+}
+
+
+.next-btn{
+
+    background:
+    linear-gradient(
+        135deg,
+        #628ce5,
+        #8cacf0
+    );
+
+    color:white;
+
+    display:none;
+
+}
+
+
+/* کارنامه */
+
+.trophy{
+
+    font-size:65px;
+
+}
+
+
+.report-title{
+
+    font-size:
+    clamp(27px,7vw,34px);
+
+    font-weight:900;
+
+    color:#684fc6;
+
+    margin:
+    7px 0 18px;
+
+}
+
+
+.report{
+
+    width:100%;
+
+    max-width:450px;
+
+    background:
+    rgba(255,255,255,.72);
+
+    border:
+    2px solid
+    rgba(221,210,245,.9);
+
+    border-radius:25px;
+
+    padding:16px;
+
+}
+
+
+.row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    background:
+    rgba(255,255,255,.88);
+
+    border-radius:14px;
+
+    padding:
+    11px 14px;
+
+    margin:7px 0;
+
+    font-size:15px;
+
+}
+
+
+.final-score{
+
+    color:#694fc6;
+
+    font-size:27px;
+
+    font-weight:900;
+
+    margin:15px 0;
+
+}
+
+
+.final-message{
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    line-height:2;
+
+    color:#555;
+
+}
+
+
+.restart{
+
+    background:
+    linear-gradient(
+        135deg,
+        #7258d1,
+        #a38ce9
+    );
+
+    color:white;
+
+}
+
+
+/* گوشی‌های با ارتفاع کم */
+
+@media(max-height:680px){
+
+    .overlay{
+
+        align-items:flex-start;
+
+        padding-top:8px;
+
+    }
+
+    .game{
+
+        min-height:520px;
+
+        max-height:
+        calc(100dvh - 16px);
+
+        padding-top:14px;
+
+    }
+
+    .screen{
+
+        min-height:460px;
+
+    }
+
+    .logo{
+
+        font-size:53px;
+
+    }
+
+    .subtitle{
+
+        margin-bottom:15px;
+
+    }
+
+    .words{
+
+        min-height:115px;
+
+    }
+
+    .answer{
+
+        min-height:85px;
+
+    }
+
+}
+
+
+/* گوشی‌های خیلی باریک */
+
+@media(max-width:360px){
+
+    .game{
+
+        padding-left:12px;
+
+        padding-right:12px;
+
+    }
+
+    .word{
+
+        padding:
+        8px 9px;
+
+        font-size:13px;
+
+    }
+
+    .badge{
+
+        font-size:12px;
+
+        padding:
+        7px 9px;
+
+    }
+
+    .btn{
+
+        font-size:16px;
+
+        padding:
+        11px 22px;
+
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="overlay">
+
+<div class="game">
+
+
+<!-- موزیک -->
+
+<audio
+id="music"
+src="https://cdn.imgurl.ir/uploads/k82059_Man_Ye_Ketab_Daram__GandomMusic_ir_.mp3"
+loop>
+</audio>
+
+
+<button
+id="musicBtn"
+class="music-btn"
+onclick="toggleMusic()">
+
+🔊
+
+</button>
+
+
+
+<!-- ======================
+صفحه ورود
+====================== -->
+
+<section
+id="startScreen"
+class="screen active">
+
+
+<div class="logo">
+📚✨
+</div>
+
+
+<div class="title">
+بازی جمله‌سازی
+</div>
+
+
+<div class="subtitle">
+
+کلمه‌های به‌هم‌ریخته را مرتب کن<br>
+
+و جملهٔ درست بساز! 🌱
+
+</div>
+
+
+<button
+class="btn start-btn"
+onclick="startGame()">
+
+شروع بازی 🚀
+
+</button>
+
+
+</section>
+
+
+
+<!-- ======================
+صفحه بازی
+====================== -->
+
+<section
+id="gameScreen"
+class="screen">
+
+
+<div class="topbar">
+
+
+<div class="badge score">
+
+⭐ امتیاز:
+
+<span id="score">
+۰
+</span>
+
+</div>
+
+
+</div>
+
+
+
+<div class="progress">
+
+<div
+id="progressBar"
+class="progress-bar">
+</div>
+
+</div>
+
+
+
+<div
+id="stage"
+class="stage">
+
+مرحلهٔ ۱ از ۴
+
+</div>
+
+
+
+<div class="instruction">
+
+کلمه‌ها را به ترتیب درست بچین 👇
+
+</div>
+
+
+
+<div
+id="words"
+class="words">
+</div>
+
+
+
+<div
+id="answer"
+class="answer">
+
+<div class="placeholder">
+
+کلمه‌ها را به ترتیب انتخاب کن...
+
+</div>
+
+</div>
+
+
+
+<div
+id="feedback"
+class="feedback">
+</div>
+
+
+
+<button
+id="checkBtn"
+class="btn check-btn"
+onclick="checkAnswer()">
+
+بررسی پاسخ ✓
+
+</button>
+
+
+
+<button
+id="nextBtn"
+class="btn next-btn"
+onclick="nextQuestion()">
+
+مرحلهٔ بعد ←
+
+</button>
+
+
+</section>
+
+
+
+<!-- ======================
+کارنامه
+====================== -->
+
+<section
+id="reportScreen"
+class="screen">
+
+
+<div class="trophy">
+🏆
+</div>
+
+
+<div class="report-title">
+
+کارنامهٔ تو
+
+</div>
+
+
+
+<div class="report">
+
+
+<div class="row">
+
+<span>
+تعداد مرحله‌ها
+</span>
+
+<strong>
+۴
+</strong>
+
+</div>
+
+
+<div class="row">
+
+<span>
+پاسخ‌های درست
+</span>
+
+<strong
+id="correctCount">
+۰
+</strong>
+
+</div>
+
+
+<div class="row">
+
+<span>
+پاسخ‌های نادرست
+</span>
+
+<strong
+id="wrongCount">
+۰
+</strong>
+
+</div>
+
+
+<div class="final-score">
+
+امتیاز نهایی:
+
+<span
+id="finalScore">
+۰
+</span>
+
+از ۴
+
+</div>
+
+
+<div
+id="finalMessage"
+class="final-message">
+</div>
+
+
+</div>
+
+
+
+<button
+class="btn restart"
+onclick="restartGame()">
+
+دوباره بازی می‌کنم 🔄
+
+</button>
+
+
+</section>
+
+
+</div>
+
+</div>
+
+
+
+<script>
+
+
+/* ======================
+سؤال‌ها
+====================== */
+
+const questions=[
+
+
+/* الف */
+
+{
+
+words:[
+
+"گفت‌وگو",
+"بچه‌ها",
+"گروه",
+"خود",
+"کردند",
+"در"
+
+],
+
+answer:[
+
+"بچه‌ها",
+"در",
+"گروه",
+"خود",
+"گفت‌وگو",
+"کردند"
+
+]
+
+},
+
+
+
+/* ب */
+
+{
+
+words:[
+
+"دانش‌آموزان",
+"کلاس",
+"شدند",
+"وارد",
+"آرام",
+"و",
+"با",
+"نظم"
+
+],
+
+answer:[
+
+"دانش‌آموزان",
+"آرام",
+"و",
+"با",
+"نظم",
+"وارد",
+"کلاس",
+"شدند"
+
+]
+
+},
+
+
+
+/* پ */
+
+{
+
+words:[
+
+"آموزگار",
+"دانش‌آموزان",
+"از",
+"تشکر",
+"کرد"
+
+],
+
+answer:[
+
+"آموزگار",
+"از",
+"دانش‌آموزان",
+"تشکر",
+"کرد"
+
+]
+
+},
+
+
+
+/* ت */
+
+{
+
+words:[
+
+"نوشتند",
+"روی",
+"برگه‌ای",
+"بچه‌ها",
+"پیشنهاد",
+"را",
+"خود"
+
+],
+
+answer:[
+
+"بچه‌ها",
+"پیشنهاد",
+"خود",
+"را",
+"روی",
+"برگه‌ای",
+"نوشتند"
+
+]
+
+}
+
+];
+
+
+let current=0;
+
+let score=0;
+
+let correct=0;
+
+let wrong=0;
+
+let selected=[];
+
+
+const music=
+document.getElementById("music");
+
+const musicBtn=
+document.getElementById("musicBtn");
+
+
+
+/* اعداد فارسی */
+
+function fa(n){
+
+const digits=[
+
+"۰","۱","۲","۳","۴",
+"۵","۶","۷","۸","۹"
+
+];
+
+return String(n).replace(
+
+/[0-9]/g,
+
+x=>digits[x]
+
+);
+
+}
+
+
+
+/* شروع */
+
+function startGame(){
+
+music.play()
+.then(()=>{
+
+musicBtn.textContent="🔊";
+
+})
+.catch(()=>{
+
+musicBtn.textContent="🔇";
+
+});
+
+
+current=0;
+
+score=0;
+
+correct=0;
+
+wrong=0;
+
+
+document
+.getElementById("startScreen")
+.classList.remove("active");
+
+
+document
+.getElementById("gameScreen")
+.classList.add("active");
+
+
+loadQuestion();
+
+}
+
+
+
+/* موزیک */
+
+function toggleMusic(){
+
+
+if(music.paused){
+
+music.play()
+.then(()=>{
+
+musicBtn.textContent="🔊";
+
+});
+
+}
+
+else{
+
+music.pause();
+
+musicBtn.textContent="🔇";
+
+}
+
+}
+
+
+
+/* بارگذاری سؤال */
+
+function loadQuestion(){
+
+
+selected=[];
+
+
+const q=
+questions[current];
+
+
+document
+.getElementById("stage")
+.textContent=
+
+"مرحلهٔ "+
+
+fa(current+1)+
+
+" از "+
+
+fa(questions.length);
+
+
+document
+.getElementById("score")
+.textContent=
+fa(score);
+
+
+document
+.getElementById("progressBar")
+.style.width=
+
+((current+1)/
+questions.length*100)+"%";
+
+
+const words=
+document.getElementById("words");
+
+
+words.innerHTML="";
+
+
+q.words.forEach(
+
+(word,index)=>{
+
+
+const button=
+document.createElement("button");
+
+
+button.className="word";
+
+
+button.textContent=
+word;
+
+
+button.dataset.index=
+index;
+
+
+button.onclick=()=>{
+
+
+if(
+
+button.classList
+.contains("used")
+
+)
+
+return;
+
+
+button.classList.add("used");
+
+
+selected.push({
+
+word:word,
+
+index:index
+
+});
+
+
+renderAnswer();
+
+};
+
+
+words.appendChild(button);
+
+
+});
+
+
+document
+.getElementById("answer")
+.innerHTML=
+
+'<div class="placeholder">'+
+
+"کلمه‌ها را به ترتیب انتخاب کن..."+
+
+"</div>";
+
+
+document
+.getElementById("feedback")
+.textContent="";
+
+
+document
+.getElementById("checkBtn")
+.style.display=
+"inline-block";
+
+
+document
+.getElementById("nextBtn")
+.style.display=
+"none";
+
+}
+
+
+
+/* نمایش پاسخ */
+
+function renderAnswer(){
+
+
+const area=
+document.getElementById("answer");
+
+
+area.innerHTML="";
+
+
+if(selected.length===0){
+
+area.innerHTML=
+
+'<div class="placeholder">'+
+
+"کلمه‌ها را به ترتیب انتخاب کن..."+
+
+"</div>";
+
+return;
+
+}
+
+
+selected.forEach(item=>{
+
+
+const button=
+document.createElement("button");
+
+
+button.className="word";
+
+
+button.textContent=
+item.word;
+
+
+button.onclick=()=>{
+
+
+selected=
+selected.filter(
+
+x=>
+x.index!==item.index
+
+);
+
+
+const original=
+document.querySelector(
+
+'#words .word[data-index="'+
+
+item.index+
+
+'"]'
+
+);
+
+
+if(original){
+
+original.classList
+.remove("used");
+
+}
+
+
+renderAnswer();
+
+};
+
+
+area.appendChild(button);
+
+});
+
+}
+
+
+
+/* بررسی */
+
+function checkAnswer(){
+
+
+if(selected.length===0){
+
+document
+.getElementById("feedback")
+.textContent=
+"اول کلمه‌ها را انتخاب کن 😊";
+
+return;
+
+}
+
+
+const userAnswer=
+selected.map(
+x=>x.word
+);
+
+
+const correctAnswer=
+questions[current].answer;
+
+
+const isCorrect=
+
+userAnswer.length===
+correctAnswer.length &&
+
+userAnswer.every(
+
+(word,index)=>
+word===
+correctAnswer[index]
+
+);
+
+
+
+if(isCorrect){
+
+
+score++;
+
+correct++;
+
+
+document
+.getElementById("feedback")
+.textContent=
+
+"آفرین! 🎉 جمله کاملاً درست است.";
+
+
+document
+.getElementById("feedback")
+.style.color=
+"#3d9b62";
+
+
+document
+.getElementById("score")
+.textContent=
+fa(score);
+
+
+}
+
+else{
+
+
+wrong++;
+
+
+document
+.getElementById("feedback")
+.textContent=
+
+"این بار درست نشد 🌷 دوباره فکر کن.";
+
+
+document
+.getElementById("feedback")
+.style.color=
+"#d26b6b";
+
+}
+
+
+document
+.getElementById("checkBtn")
+.style.display=
+"none";
+
+
+if(
+
+current<
+questions.length-1
+
+){
+
+
+document
+.getElementById("nextBtn")
+.style.display=
+"inline-block";
+
+
+}
+
+else{
+
+
+setTimeout(
+
+showReport,
+
+1000
+
+);
+
+}
+
+}
+
+
+
+/* مرحله بعد */
+
+function nextQuestion(){
+
+current++;
+
+loadQuestion();
+
+}
+
+
+
+/* کارنامه */
+
+function showReport(){
+
+
+document
+.getElementById("gameScreen")
+.classList.remove("active");
+
+
+document
+.getElementById("reportScreen")
+.classList.add("active");
+
+
+document
+.getElementById("correctCount")
+.textContent=
+fa(correct);
+
+
+document
+.getElementById("wrongCount")
+.textContent=
+fa(wrong);
+
+
+document
+.getElementById("finalScore")
+.textContent=
+fa(score);
+
+
+let message="";
+
+
+if(score===4){
+
+message=
+
+"🌟 فوق‌العاده بود! تو یک جمله‌ساز حرفه‌ای هستی!";
+
+}
+
+else if(score>=3){
+
+message=
+
+"👏 آفرین! خیلی خوب بود. با کمی تمرین عالی‌تر هم می‌شوی.";
+
+}
+
+else if(score>=2){
+
+message=
+
+"🌱 تلاش خوبی کردی! دوباره بازی کن تا بهتر شوی.";
+
+}
+
+else{
+
+message=
+
+"💚 ناامید نشو! دوباره امتحان کن؛ تو حتماً می‌توانی.";
+
+}
+
+
+document
+.getElementById("finalMessage")
+.textContent=
+message;
+
+}
+
+
+
+/* شروع دوباره */
+
+function restartGame(){
+
+
+document
+.getElementById("reportScreen")
+.classList.remove("active");
+
+
+document
+.getElementById("startScreen")
+.classList.add("active");
+
+
+}
+
+
+</script>
+
+</body>
+</html>
+
